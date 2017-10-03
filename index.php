@@ -287,27 +287,22 @@
 	}
 
 	function prenda() {
+		
 		var p = document.getElementById("prenda_select");
 		var prendaSeleccionada = p.options[p.selectedIndex].value;
 		var urlString = "procesos.php";
 		var response = [];
 
-		if (prendaSeleccionada>0){
-			$.ajax({
-	        	url: urlString, //the page containing php script
-	        	data: {prenda: prendaSeleccionada},
-	        	type: 'GET', //request type
-	        	success:function(response){
-	        		procesos(JSON.parse(response));
-
-	       		},error: function(){console.log("ERROR");}
-     		});
+		if (prendaSeleccionada){
+			$.get(urlString, {prenda: prendaSeleccionada}, (response) => {
+				procesos(response);
+			});
 		}
 		
 	}
 
 	function procesos(response){
-		alert("SII");
+		alert(response);
 	}
 
 </script>
