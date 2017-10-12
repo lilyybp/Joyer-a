@@ -15,7 +15,7 @@
 
     <div class="w3-content">
       <header class="w3-container w3-center w3-white">
-        <h1 class="w3-xxxlarge"><b>JOYERIA CLARO</b></h1>
+        <h1 class="w3-xxxlarge"><b>JOYERIA CLARO'S</b></h1>
       </header>
       
 

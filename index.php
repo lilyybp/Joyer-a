@@ -28,7 +28,7 @@
 
 		<div class="w3-content">
 		  <header class="w3-container w3-center w3-white">
-		    <h1 class="w3-xxxlarge"><b>JOYERIA CLARO</b></h1>
+		    <h1 class="w3-xxxlarge"><b>JOYERIA CLARO'S</b></h1>
 		  </header>
 		  <div class="w3-row w3-padding w3-border">
 
@@ -37,6 +37,7 @@
 		      <div class="w3-container w3-white w3-margin w3-padding-large">
 		        <div class="w3-center">
 		          <h3>PROCESOS EN CURSO</h3>
+
 		          <!-- TABLAS -->
 		          <div class="colas">
 		          	<?php
@@ -56,7 +57,7 @@
 												<th>
 												<?php 
 													echo $nombre;
-													$sql2 = "SELECT * FROM cola WHERE operador='$usuario'";
+													$sql2 = "SELECT * FROM cola WHERE operador='$usuario' ORDER BY urgencia DESC";
 													$result2 = mysqli_query($con, $sql2);
 													$rows2 = $result2->num_rows;
 												?>
@@ -68,7 +69,7 @@
 											for($j=0 ; $j<$rows2 ; $j++){
 												$row2 = $result2->fetch_assoc();
 												if ($usuario == $row2["operador"]){
-													echo "<tr><td>";
+													echo "<tr onclick=click();><td>";
 													echo $row2["folio"];
 													echo "</td></tr>";
 												}
@@ -95,8 +96,9 @@
 		          </h4>
 		        </div>
 		        <div style="padding:15px" class="w3-ul w3-hoverable w3-white">
+		        
 		        <!-- AGREGAR NUEVO PEDIDO -->
-		          <form class="panelControl" action="pedido.php">
+		          <form class="panelControl" action="pedido.php" method="post">
 		          	<table style="width: 100%;">
 		          	  <tr>
 		          	    <td><label class="w3-padding-16 w3-large">Nombre: </label></td>
@@ -107,8 +109,9 @@
 		           	    <td><input type="text" name="folio" style="width: 100%;"></td>
 		           	  </tr>
 		           	  <tr>
-		           	    <td><label class="w3-padding-16 w3-large">Prenda:</label>
-		           	    	<select id="prenda_select" name="prendas_select" onChange="if (this.selectedIndex) prenda()">
+		           	    <td><label class="w3-padding-16 w3-large">Prenda:</label></td>
+			      		<td style="text-align: left">
+				      		<select id="prenda_select" name="prendas_select" onChange="if (this.selectedIndex) prenda()">
 		           	    		<option selected>------------</option>
 		           	    		<?php
 		           	    			$sqlPrendas= "SELECT * FROM prenda;";
@@ -118,42 +121,24 @@
 										$prenda = $resultPrendas->fetch_assoc();
 										echo "<option value=".$prenda["id_prenda"].">".$prenda["nombre_prenda"]."</option>";
 									}
-		           	    		?>
-						        
-			      			</select>
-		           	    	<!--<input type="text" name="prenda" id="tags" style="width: 100%;">-->
-			      		</td>
-			      		<td style="text-align: center"><label class="w3-padding-16 w3-large">Dificultad:</label>
-			      			<select name="dificultad_select">
-						        <option value="1">1</option>
-						        <option value="2">2</option>
-						        <option value="3">3</option>
+		           	    		?>   
 			      			</select>
 			      		</td>
 		           	  </tr>
 		            	<tr style="text-align: center;">
 		            		<td colspan="2"><label class="w3-padding-16 w3-large">Procesos:</label><br></td>
-		            		<!--<td><label class="w3-padding-16 w3-large">Agregados:</label><br></td>-->
 		            	</tr>
 		            	
 		            	</tr>
 		            	<tr>
 		            		<td colspan="2">
-		            			<select multiple class="selectpicker" id="procesos" name="procesos">
-		            			<?php
-		           	    			$sqlProcesos= "SELECT * FROM proceso;";
-		           	    			$resultProcesos = mysqli_query($con, $sqlProcesos);
-									$procesos = $resultProcesos->num_rows;
-									for($y=0 ; $y<$procesos ; $y++){
-										$proceso = $resultProcesos->fetch_assoc();
-										echo "<option value=".$proceso["id_proceso"].">".$proceso["nombre_proceso"]."</option>";
-									}
-		           	    		?>
+		            			<select multiple="multiple" multiple class="selectpicker" id="procesos" name="Nameprocesos">
+		            			
 							        
 				      			</select></td>
 		            	</tr>
 		            	<tr>
-		            		<td colspan="2" style="height: 40px;"><a class= "button-agregar" href="">AGREGAR</a></td>
+		            		<td colspan="2" style="height: 40px;"><a class= "button-agregar" onclick="agregarPrendaProceso()">AGREGAR</a></td>
 		            	</tr>
 		            </table><br>
 		            <table style="width: 100%;" >
@@ -176,9 +161,9 @@
 				      		<td><label class="w3-padding-16 w3-large">Urgencia:</label></td>
 		            		<td>
 		            			<select name="urgencia_select" id="urgencia">
-							        <option>BAJA</option>
-							        <option>MEDIA</option>
-							        <option>ALTA</option>
+							        <option value="1" >BAJA</option>
+							        <option value="2" >MEDIA</option>
+							        <option value="3" >ALTA</option>
 				      			</select>
 				      		</td>
 		            	</tr>
@@ -197,6 +182,7 @@
 		            	</tr>
 		            </table>
 		            <input type="hidden" name="comentario" id="comentarioInput" value="">
+		            <input type="hidden" name="tablaName" id="tablaId" value="">
 		          </form>
 		        </div>
 		      </div>
@@ -219,27 +205,12 @@
 		        </div>
 		        <div style="padding:15px" class="w3-ul w3-hoverable w3-white">
 		        	<div id="procesos_agregados" class="tablaAgregados">
-		          	<table>
+		          	<table id=tablaPrendasProcesos>
 		          		<tr>
 		          			<th></th>
 		          			<th><label class="w3-padding-16 w3-large">Prenda:</label></th>
 		          			<th><label class="w3-padding-16 w3-large">Proceso:</label></th>
 		          		</tr>
-		          		<tr>
-		          			<td><input type="checkbox" name="" value=""></td>
-							<td>Anillo</td>
-							<td>Soldar</td>
-						</tr>
-						<tr>
-		          			<td><input type="checkbox" name="" value=""></td>
-							<td>Cadena</td>
-							<td>Quitar 3 eslabones de cada lado</td>
-						</tr>
-						<tr>
-		          			<td><input type="checkbox" name="" value=""></td>
-							<td>Anillo</td>
-							<td>Soldar</td>
-						</tr>
 		          	</table><br>
 		          	<a id="btn_agregados" class= "button-cancelar">QUITAR</a>
 		          	<a style="margin-left: 15%;" onclick="aceptar();" id="btn_agregados" class= "button-aceptar">ACEPTAR</a>
@@ -265,11 +236,11 @@
 </script>
 
 <script type="text/javascript">
+	var tablaPrendaProcesos = [];
 	function popUpComentario(){
 		var checked = document.getElementById("checkbox").checked;
 		if (checked == true){
 			var comentario = prompt("Agregar comentario:");
-			document.getElementById("comentarioInput").value = comentario;
 		}
 	}
 	function click(){
@@ -284,10 +255,12 @@
 	function aceptar(){
 		document.getElementById("divAgregados").style.display = "none";
 		document.getElementById("divPanel").style.display = "block";
+		document.getElementById("tablaId").value = tablaPrendaProcesos;
+		console.log(tablaPrendaProcesos);
 	}
 
 	function prenda() {
-		
+		document.getElementById('procesos').options.length = 0;
 		var p = document.getElementById("prenda_select");
 		var prendaSeleccionada = p.options[p.selectedIndex].value;
 		var urlString = "procesos.php";
@@ -295,14 +268,75 @@
 
 		if (prendaSeleccionada){
 			$.get(urlString, {prenda: prendaSeleccionada}, (response) => {
-				procesos(response);
+				procesos(JSON.parse(response));
 			});
 		}
-		
 	}
 
 	function procesos(response){
-		alert(response);
+		
+		var resp = response;
+		var procesos = document.getElementById("procesos");
+		for (var i=0 ; i< resp.length ;i++){
+			var option = document.createElement("option");
+			option.value = resp[i]['proceso'];
+			option.innerHTML = resp[i]['nombre_proceso'];
+			procesos.appendChild(option);
+
+		}
+		
+	}
+	
+	function agregarPrendaProceso(){
+		var p1 = document.getElementById("prenda_select");
+		var prenda = p1.options[p1.selectedIndex].value;
+		p2 = document.getElementById("procesos");
+		
+		var prendaProcesos = [];
+
+		for (var i=0 ; i<p2.length; i++){
+			if(p2[i].selected){
+				var proceso = p2[i].value;
+				prendaProcesos.push(prenda,proceso);
+			}
+		}
+		tablaPrendaProcesos.push(prendaProcesos);
+		console.log(tablaPrendaProcesos);
+		var x = tablaPrendaProcesos[0];
+		console.log(x);
+		
+		var urlString = 'prendaProceso.php';
+
+		$.get(urlString, {prenda:prenda , proceso: proceso }, (response) =>{
+			llenarTabla(JSON.parse(response));
+		});
+
+		document.getElementById("tablaId").value = tablaPrendaProcesos;
+		console.log(tablaPrendaProcesos);
+	}
+
+	function llenarTabla(response){
+		var tabla = document.getElementById("tablaPrendasProcesos");
+		var tr = document.createElement("tr");
+		var td = document.createElement("td");
+		var td1 = document.createElement("td");
+		var td2 = document.createElement("td");
+
+		var prenda = document.createTextNode(response[0]['nombre_prenda']);
+		var proceso = document.createTextNode(response[0]['nombre_proceso']);
+		  
+		var checkbox = document.createElement("input");
+		checkbox.type = "checkbox";
+		checkbox.id = tablaPrendaProcesos.length;
+
+		td.appendChild(checkbox);
+		td1.appendChild(prenda);
+		td2.appendChild(proceso);
+
+		tr.appendChild(td);
+		tr.appendChild(td1);
+		tr.appendChild(td2);
+		tabla.appendChild(tr);
 	}
 
 </script>

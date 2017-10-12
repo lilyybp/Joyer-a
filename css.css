@@ -334,18 +334,11 @@ td.folio{
     font-size: 24px;
     border-collapse: collapse;
     width: 100%;
-    height: 192px;
     max-height: 192px;
     border-spacing: 0;
 
 }
 
-.colaOperador tr:nth-child(even) {
-    background-color: #dbdbdb;
-}
-.colaOperador tr:hover {
-    background-color: #6a6c6d;
-}
 .colaOperador th{
     color: white;
     background-color: #050e51;
@@ -353,6 +346,15 @@ td.folio{
     font-size: 23px;
     height: 30px;
 }
+/*
+
+.colaOperador tr:nth-child(even) {
+    background-color: #dbdbdb;
+}
+.colaOperador tr:hover {
+    background-color: #6a6c6d;
+}
+
 
 
 .colaOperador tbody{
@@ -397,4 +399,4 @@ td.folio{
 
 tr.boton{
   height: 43px;
-}
+}*/

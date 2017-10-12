@@ -28,7 +28,7 @@
 
     <div class="w3-content">
       <header class="w3-container w3-center w3-white">
-        <h1 class="w3-xxxlarge"><b>JOYERIA CLARO</b></h1>
+        <h1 class="w3-xxxlarge"><b>JOYERIA CLARO'S</b></h1>
       </header>
       <div class="w3-row w3-padding w3-border">
 
@@ -50,41 +50,27 @@
                     $usuario= $row["usuario"];
                     ?>
                       <div class="colaOperador">
-                        <table class="tableSection">
-                    <thead>
-                      <tr>
-                        <th>
+                        <table>
+                          <thead><tr><th colspan="2">
                         <?php 
                           echo $nombre;
                           $sql2 = "SELECT * FROM cola WHERE operador='$usuario'";
                           $result2 = mysqli_query($con, $sql2);
                           $rows2 = $result2->num_rows;
                         ?>
-                        </th>
-                      </tr>
-                    </thead>
-                    <tbody>
+                        </th></tr></thead><tbody>
                     <?php
-                      for($j=0 ; $j<$rows2 ; $j++){
+                      for($j=0 ; $j<1 ; $j++){
                         $row2 = $result2->fetch_assoc();
                         if ($usuario == $row2["operador"]){
-                          echo "<tr><td>";
+
+                          echo "<tr><td>Folio:</td><td>";
                           echo $row2["folio"];
                           echo "</td></tr>";
                         }
                       }
-                    ?>
-                    </tbody>
-                  </table>
-                  <table class="oper">
-                    <tbody class="oper">
-                      <tr><td class="descripción">
-                      Cadena - Camb broche<br>
-                      Anillo - Colocar piedra<br><br>
-                      </td></tr>
-                      <tr class="boton"><td class="boton"><a style="margin-left: auto;" onclick="aceptar();" id="btn_agregados" class= "button-aceptar">TERMINAR</a></td></tr>
-                    </tbody>
-                  </table>
+                    ?>    </tbody>
+                        </table>
                       </div>
                     <?php
                   }
