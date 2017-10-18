@@ -64,14 +64,29 @@
 												</th>
 											</tr>
 										</thead>
-										<tbody>
+										<tbody >
 										<?php
 											for($j=0 ; $j<$rows2 ; $j++){
 												$row2 = $result2->fetch_assoc();
 												if ($usuario == $row2["operador"]){
-													echo "<tr onclick=click();><td>";
+													switch ($row2["urgencia"]){
+														case 1:
+															$color1= '#2bdb6f';
+															break;
+														case 2:
+															$color1= 'orange';
+															break;
+														case 3:
+															$color1= 'red';
+															break;
+
+													}
+													
+													$color2 = "style='color:".$color1."'";
+													echo "<tr onclick='Myclick(".$row2['folio'].")';><td><spam ".$color2.">▪ </spam>";
 													echo $row2["folio"];
 													echo "</td></tr>";
+													
 												}
 											}
 										?>
@@ -102,15 +117,16 @@
 		          	<table style="width: 100%;">
 		          	  <tr>
 		          	    <td><label class="w3-padding-16 w3-large">Nombre: </label></td>
-		          	    <td><input type="text" name="nombreCliente" style="width: 100%;"><br></td>
+		          	    <td><input type="text" name="nombreCliente" id="nombreCliente" style="width: 100%;" required><br></td>
 		          	  </tr>
 		           	  <tr>
 		           	    <td><label class="w3-padding-16 w3-large">Folio: </label></td>
-		           	    <td><input type="text" name="folio" style="width: 100%;"></td>
+		           	    <td><input type="text" name="folio" id="folio" style="width: 100%;" required></td>
 		           	  </tr>
+
 		           	  <tr>
 		           	    <td><label class="w3-padding-16 w3-large">Prenda:</label></td>
-			      		<td style="text-align: left">
+			      		<td style="margin-top: 10%;">
 				      		<select id="prenda_select" name="prendas_select" onChange="if (this.selectedIndex) prenda()">
 		           	    		<option selected>------------</option>
 		           	    		<?php
@@ -125,20 +141,16 @@
 			      			</select>
 			      		</td>
 		           	  </tr>
-		            	<tr style="text-align: center;">
-		            		<td colspan="2"><label class="w3-padding-16 w3-large">Procesos:</label><br></td>
-		            	</tr>
-		            	
-		            	</tr>
 		            	<tr>
+		            		<td colspan="1"><label class="w3-padding-16 w3-large">Procesos:</label></td>
 		            		<td colspan="2">
-		            			<select multiple="multiple" multiple class="selectpicker" id="procesos" name="Nameprocesos">
-		            			
-							        
-				      			</select></td>
-		            	</tr>
+		            			<select id="procesos" name="Nameprocesos">
+		            				<option selected>-------------------------------------------</option>
+				      			</select>
+				      		</td>
+		            		
 		            	<tr>
-		            		<td colspan="2" style="height: 40px;"><a class= "button-agregar" onclick="agregarPrendaProceso()">AGREGAR</a></td>
+		            		<td colspan="2" style="height: 60px;"><a class= "button-agregar" onclick="agregarPrendaProceso()">AGREGAR</a></td>
 		            	</tr>
 		            </table><br>
 		            <table style="width: 100%;" >
@@ -146,7 +158,7 @@
 		            		<td><label class="w3-padding-16 w3-large">Operador:</label></td>
 		            		<td>
 		            			<select style="text-transform: uppercase;" name="operador_select" id="operador">
-		            				<option selected>----------</option>
+		 
 			            			<?php
 			           	    			$sqlOperadores= "SELECT * FROM usuario WHERE tipo='operador';";
 			           	    			$resultOperadores = mysqli_query($con, $sqlOperadores);
@@ -161,24 +173,26 @@
 				      		<td><label class="w3-padding-16 w3-large">Urgencia:</label></td>
 		            		<td>
 		            			<select name="urgencia_select" id="urgencia">
-							        <option value="1" >BAJA</option>
-							        <option value="2" >MEDIA</option>
-							        <option value="3" >ALTA</option>
+							        <option value="1">BAJA</option>
+							        <option value="2">MEDIA</option>
+							        <option value="3">ALTA</option>
 				      			</select>
 				      		</td>
 		            	</tr>
 		            	
 		            	<tr>
 		            		<td colspan="2"><label class="w3-padding-16 w3-large">Tiempo estimado:</label></td>
-							<td colspan="2"><input type="text" name="tiempoEstimado" style="width: 100%;"></td>
+							<td colspan="2"><input type="text" name="tiempoEstimado" id="tiempo" style="width: 100%;" required></td>
 		            	</tr>
 		            	<tr>
-		            		<td style="text-align: center;" colspan="4"><input type="checkbox" name="comentario" value="comentario" id="checkbox" onchange="popUpComentario()"><label class="w3-padding-16 w3-large"> Agregar comentario</label>
-		            		</td>
+		            		<td colspan="1"><label class="w3-padding-16 w3-large">Comentario:</label></td>
+		            		<td colspan="3"><input type="text" name="comentarioName" id="comentarioFolio" style="width: 100%;"></td>
 		            	</tr>
 		            	<tr>
-							<td colspan="2"><a id="btn_agregados" class= "button-agregados" onclick="agregados()">AGREGADOS</a></td>
-							<td colspan="2"><button class="button-aceptar">ACEPTAR</button></td>
+		            		<td colspan="1"><a id="btn_agregados" class= "button-cancelar" onclick="location.reload()">CANCELAR</a></td>
+							<td colspan="1"><a id="btn_agregados" class= "button-agregados" onclick="agregados()">AGREGADOS</a></td>
+							<td colspan="1" id="botonAceptar"><button  class="button-aceptar">ACEPTAR</button></td>
+							
 		            	</tr>
 		            </table>
 		            <input type="hidden" name="comentario" id="comentarioInput" value="">
@@ -189,9 +203,74 @@
 		      <hr>
 		    </div>
 
+		    <!-- PANEL DE CONTROL DE CAMBIOS -->
+		    <div style="display: none" id="divFolio" class="w3-col l4">
+		      <div class="w3-white w3-margin">
+		        <div class="w3-container w3-padding w3-black">
+		          <h4>Folio: <spam id="folioUpdate"></spam>
+		          </h4>
+		        </div>
+		        <div style="padding:15px" class="w3-ul w3-hoverable w3-white">
+		        
+		        <!-- DATOS DEL FOLIO SELECCIONADO -->
+		          <form class="panelControl" action="verPedido.php" method="post">
+		          <input type="hidden" name="folioName" id="folioForm" value="">
+		          	<table style="width: 100%;">
+		          	  <tr>
+		          	    <td><label class="w3-padding-16 w3-large">Nombre: </label></td>
+		          	    <td><input type="text" name="nombreClienteFolio" id="nombreClienteFolio" style="width: 100%;" required><br></td>
+		          	  </tr>
+		           	 
+		            </table>
+		            <table style="width: 100%;" >
+		            	<tr>
+		            		<td><label class="w3-padding-16 w3-large">Operador:</label></td>
+		            		<td>
+		            			<select style="text-transform: uppercase;" name="operador_selectFolio" id="operadorFolio">
+		 
+			            			<?php
+			           	    			$sqlOperadores= "SELECT * FROM usuario WHERE tipo='operador';";
+			           	    			$resultOperadores = mysqli_query($con, $sqlOperadores);
+										$procesos = $resultOperadores->num_rows;
+										for($z=0 ; $z<$procesos ; $z++){
+											$operador = $resultOperadores->fetch_assoc();
+											echo "<option id='".$operador["usuario"]."' value=".$operador["usuario"].">".$operador["nombre"]."</option>";
+										}
+			           	    		?>   
+				      			</select>
+				      		</td>
+				      		<td style="text-align: center"><label class="w3-padding-16 w3-large">Urgencia:</label></td>
+		            		<td>
+		            			<select name="urgencia_selectFolio" id="urgenciaFolio2">
+							        <option value="1" id="1">BAJA</option>
+							        <option value="2" id="2">MEDIA</option>
+							        <option value="3" id="3">ALTA</option>
+				      			</select>
+				      		</td>
+		            	</tr>
+		            	
+		            	<tr>
+		            		<td colspan="2"><label class="w3-padding-16 w3-large">Tiempo Estimado:</label></td>
+							<td colspan="2" style="text-align: left"><input type="text" name="tiempoEstimadoFolio" id="tiempoFolio" style="width: 100%;" required></td>
+		            	</tr>
+		            	<tr></tr>
 
-
-
+		            	<tr>
+		            		<td colspan="1"><label class="w3-padding-16 w3-large">Comentario:</label></td>
+		            		<td colspan="3"><input type="text" name="comentarioName" id="comentarioFolio" style="width: 100%;"></td>
+		            	</tr>
+		            	<tr >
+		            		<td colspan="1" style="padding-top: 5%;" ><a id="btn_agregados" class= "button-cancelar" >ELIMINAR</a></td>
+		            		<td colspan="1" style="padding-top: 5%;" id="botonCambiar"><button  class="button-editar">EDITAR PEDIDO</button></td>
+							<td colspan="1" style="padding-top: 5%;"><a id="btn_agregados" class= "button-aceptar" onclick="location.reload()">ACEPTAR</a></td>
+							
+		            	</tr>
+		            </table>
+		          </form>
+		        </div>
+		      </div>
+		      <hr>
+		    </div>
 
 		    <!-- PROCESOS AGREGADOS -->
 		    <?php
@@ -212,7 +291,7 @@
 		          			<th><label class="w3-padding-16 w3-large">Proceso:</label></th>
 		          		</tr>
 		          	</table><br>
-		          	<a id="btn_agregados" class= "button-cancelar">QUITAR</a>
+		          	<a id="btn_quitar" class= "button-quitar" onclick="quitar();">QUITAR</a>
 		          	<a style="margin-left: 15%;" onclick="aceptar();" id="btn_agregados" class= "button-aceptar">ACEPTAR</a>
 		          </div>
 		          
@@ -237,14 +316,39 @@
 
 <script type="text/javascript">
 	var tablaPrendaProcesos = [];
+
 	function popUpComentario(){
 		var checked = document.getElementById("checkbox").checked;
 		if (checked == true){
 			var comentario = prompt("Agregar comentario:");
 		}
 	}
-	function click(){
-		alert("Click");
+	function Myclick(folio){
+		var urlString = "llenarDatos.php";
+		if (folio){
+			$.get(urlString, {folio: folio}, (response) => {
+				llenarDatos(JSON.parse(response));
+			});
+		}
+
+		document.getElementById("divAgregados").style.display = "none";
+		document.getElementById("divPanel").style.display = "none";
+		document.getElementById("divFolio").style.display = "block";
+		
+	}
+
+	function llenarDatos(response){
+		document.getElementById("nombreClienteFolio").value = response[0]['nombre_cliente'];
+		document.getElementById("folioUpdate").innerHTML = response[0]['folio'];
+		document.getElementById(response[0]['operador']).selected = true;
+		document.getElementById(response[0]['urgencia']).selected = true;
+		document.getElementById("tiempoFolio").value = response[0]['tiempoEstimado'];
+		document.getElementById("folioForm").value=response[0]['folio'];
+
+		
+
+		//llenarTabla2(response);
+
 	}
 
 	function agregados(){
@@ -337,6 +441,91 @@
 		tr.appendChild(td1);
 		tr.appendChild(td2);
 		tabla.appendChild(tr);
+	}
+
+	function llenarTabla2(response){
+		
+
+		for (var i=0 ; i< response.length ; i++){
+			var tabla = document.getElementById("tablaPrendasProcesos");
+			var tr = document.createElement("tr");
+			var td = document.createElement("td");
+			var td1 = document.createElement("td");
+			var td2 = document.createElement("td");
+			var prenda = document.createTextNode(response[i]['nombre_prenda']);
+			var proceso = document.createTextNode(response[i]['nombre_proceso']);
+
+			var prendaID = response[i]['prenda'];
+			var procesoID = response[i]['proceso'];
+
+			var prendaProcesos = [];
+			prendaProcesos.push(prendaID,procesoID);
+			console.log("prendaProcesos[]: "+prendaProcesos);
+			tablaPrendaProcesos.push(prendaProcesos);
+			console.log("tabla[]:"+tablaPrendaProcesos);
+			
+
+			
+			
+			  
+			var checkbox = document.createElement("input");
+			checkbox.type = "checkbox";
+			//checkbox.onchange= abilitarQuitar();
+			checkbox.id = "c"+tablaPrendaProcesos.length/2;
+
+			td.appendChild(checkbox);
+			td1.appendChild(prenda);
+			td2.appendChild(proceso);
+
+			tr.appendChild(td);
+			tr.appendChild(td1);
+			tr.appendChild(td2);
+			tr.id = "row"+tablaPrendaProcesos.length/2;
+			tabla.appendChild(tr);
+
+		}
+		
+		
+		document.getElementById("tablaId").value = tablaPrendaProcesos;
+		
+	}
+
+	function abilitarQuitar(){
+		document.getElementById("btn_quitar").style.opacity= 1;
+		document.getElementById("btn_quitar").style.cursor= "pointer";
+	}
+
+
+	function quitar(){
+		var tabla = document.getElementById("tablaPrendasProcesos");
+
+		//console.log("0: "+tablaPrendaProcesos[0]);
+		//console.log("1: "+tablaPrendaProcesos[1]);
+		//console.log("2: "+tablaPrendaProcesos[2]);
+		//console.log("3: "+tablaPrendaProcesos[3]);
+		var x = 0;
+		var y = 1;
+
+		for (var i=0 ; i< tablaPrendaProcesos.length/2 ; i++){
+			console.log("i"+i);
+			console.log(tablaPrendaProcesos[x]);
+			console.log(tablaPrendaProcesos[y]);
+			var checkboxSelected = document.getElementById("c"+(i+1)).checked;
+			console.log("idCheckBox:"+(i+1));
+			console.log(checkboxSelected);
+			if (checkboxSelected){
+				var row = document.getElementById("row"+(i+1));
+				console.log(i);
+				tabla.deleteRow(i+1); 
+				tablaPrendaProcesos.splice(x,2);
+			}
+
+			x = x+2;
+			y = y+2;
+		}
+
+	
+		
 	}
 
 </script>

@@ -7,6 +7,7 @@
     <title>Joyeria Claro</title>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="refresh" content="10;url=operador2.php">
     <link rel="stylesheet" href="w3.css">
     <link type="text/css" rel="stylesheet" href="css.css">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Oswald">
@@ -15,14 +16,32 @@
     <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
       <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
       <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
-    
+    <style>
+    #folio2
+    {
+        padding: 1px;           /*To make sure that the input and the label will not overlap the border, If you remove this line it will not display correctly on Opera 15.0*/
+        border: 1px solid activeborder; /*Create our fake border :D*/
+    }
+    #folio2{
+        width: 138px;
+        background-color: white;    
+        text-align:center;
+        -webkit-touch-callout: none;    /*Make the label text unselectable*/
+        -webkit-user-select: none;
+        -khtml-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+    }
+    #folio2
+    {
+        border: none;           /*We have our fake border already :D*/
+    }
+    </style>
 
   
   </head>
   <body class="w3-light-grey">
     <div class="w3-bar w3-black w3-hide-small">
-      <a href="inicio.php" class="w3-bar-item w3-button">Cerrar sesión</a>
-      <a href="historial.php" class="w3-bar-item w3-button">Ver historial</a>
       <a href="#" class="w3-bar-item w3-button w3-right"><i class="fa fa-info-circle"></i></a>
     </div>
 
@@ -50,26 +69,62 @@
                     $usuario= $row["usuario"];
                     ?>
                       <div class="colaOperador">
-                        <table>
-                          <thead><tr><th colspan="2">
-                        <?php 
-                          echo $nombre;
-                          $sql2 = "SELECT * FROM cola WHERE operador='$usuario'";
-                          $result2 = mysqli_query($con, $sql2);
-                          $rows2 = $result2->num_rows;
-                        ?>
-                        </th></tr></thead><tbody>
-                    <?php
-                      for($j=0 ; $j<1 ; $j++){
-                        $row2 = $result2->fetch_assoc();
-                        if ($usuario == $row2["operador"]){
+                        <table style="min-height: 250px; table-layout: fixed;">
+                          <thead>
+                            <tr>
+                              <th colspan="2">
+                                <?php 
+                                  echo $nombre;
+                                  
+                                  $sql3 = "SELECT folio FROM cola WHERE operador= '$usuario' ORDER BY urgencia DESC limit 1";
+                                  $result3 = mysqli_query($con, $sql3);
+                                  $row3 = $result3->fetch_assoc();
+                                  $folioo= $row3['folio'];  
+                              //    $sql2 = "SELECT * FROM pedido WHERE operador='$usuario' ORDER BY urgencia DESC";
+                                 $sql2="SELECT DISTINCT pedido.folio, pedido.nombre_cliente, pedido.operador, prenda.nombre_prenda, proceso.nombre_proceso, pedido.tiempoEstimado, pedido.urgencia, pedido.comentario FROM pedido JOIN prenda ON pedido.prenda = prenda.id_prenda JOIN prenda_proceso ON pedido.prenda = prenda_proceso.prenda JOIN proceso ON pedido.proceso = proceso.id_proceso where folio=$folioo;";
+                                  $result2 = mysqli_query($con, $sql2);
+                                  if(!$result2){
+                                    $rows2=0;
+                                    $penultimo=0;
+                                  }else{
+                                    $rows2=$result2->num_rows;
+                                    $penultimo=$rows2-1;
+                                  }
 
-                          echo "<tr><td>Folio:</td><td>";
-                          echo $row2["folio"];
-                          echo "</td></tr>";
-                        }
-                      }
-                    ?>    </tbody>
+                                                            ?>
+                              </th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            <form method='post' action="terminar.php">
+                              <?php
+                                if ($rows2 != 0){
+                                  for($j=0 ; $j<$rows2 ; $j++){
+                                    $row2 = $result2->fetch_assoc();
+                                    if ($usuario == $row2["operador"]){
+
+                                      if ($j==0) {
+                                      echo "<tr style='border-bottom:solid 1px black;'><td style='width:140px;'>Folio:</td><td><input type='text' name='folio2' id='folio2'  value='";
+                                      echo $row2["folio"];
+                                      echo "'></td></tr>";                                                                                
+                                         }
+
+                                      echo "<tr><td>";
+                                      echo $row2["nombre_prenda"];
+                                      echo "</td><td>";
+                                      echo $row2["nombre_proceso"];
+                                      echo "</td></tr>";
+                                      if ($j==$penultimo){
+                                        echo "<tr style='border-top:solid 1px black;'><td colspan='2'> Comentario </td></tr><tr><td colspan='2'>";
+                                        echo $row2["comentario"];
+                                        echo "</td></tr><tr style='border-top:solid 1px black; height:70px;'><td colspan='2'><input  style='margin:10px auto;' class='button-aceptar' type='submit' value='terminar' onclick='terminarproc(".$row2['folio'].")';></td></tr>";
+                                      }
+                                    }
+                                  }
+                                }
+                              ?>  
+                            </form>  
+                          </tbody>
                         </table>
                       </div>
                     <?php
@@ -96,39 +151,6 @@
 </script>
 
 <script type="text/javascript">
-  function popUpComentario(){
-    var checked = document.getElementById("checkbox").checked;
-    if (checked == true){
-      var comentario = prompt("Agregar comentario:");
-    }
-  }
-  function click(){
-    alert("Click");
-  }
-
-  function agregados(){
-    document.getElementById("divAgregados").style.display = "block";
-    document.getElementById("divPanel").style.display = "none";
-  }
-
-  function aceptar(){
-    document.getElementById("divAgregados").style.display = "none";
-    document.getElementById("divPanel").style.display = "block";
-  }
-
-  function prenda() {
-    var p = document.getElementById("prenda_select");
-    var prendaSeleccionada = p.options[p.selectedIndex].value;
-
-    $.ajax({
-          url:"procesos.php/prenda="+prendaSeleccionada, //the page containing php script
-          type: "GET", //request type
-          success:function(result){
-            procesos(JSON.parse(response))
-
-          },error: function(){console.log("ERROR");}
-      });
-  }
 
 </script>
  

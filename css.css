@@ -79,9 +79,25 @@ body {
 
 }
 
+.button-guardar {
+    margin-left: 30%;
+    -webkit-border-radius: 4px;
+    -moz-border-radius: 4px;
+    border-radius: 4px;
+    border: solid 1px;
+    text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.4);
+    background:#3875d8;
+    color: white;
+    padding: 8px 8px;
+    text-decoration: none;
+    cursor:pointer;
+    width: 130px;
+
+}
+
 .button-cancelar {
    
-    margin-left: 25%;
+    margin-left: 10%;
     -webkit-border-radius: 4px;
     -moz-border-radius: 4px;
     border-radius: 4px;
@@ -94,9 +110,29 @@ body {
     cursor:pointer;
 }
 
+.button-quitar {
+   
+    margin-left: 25%;
+    -webkit-border-radius: 4px;
+    -moz-border-radius: 4px;
+    border-radius: 4px;
+    border: solid 1px;
+    text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.4);
+    background: #b2252c; 
+    color: #FFF;
+    padding: 8px 8px;
+    text-decoration: none;
+    
+    cursor: pointer;
+    opacity: 1; 
+
+}
+
+
+
 .button-aceptar {
 
-    margin-left: 25%;
+    margin-left: 80%;
     -webkit-border-radius: 4px;
     -moz-border-radius: 4px;
     border-radius: 4px;
@@ -110,6 +146,21 @@ body {
 }
 .button-agregados {
 
+    margin-left: 45%;
+    -webkit-border-radius: 4px;
+    -moz-border-radius: 4px;
+    border-radius: 4px;
+    border: solid 1px;
+    text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.4);
+    background:#3875d8;
+    color: white;
+    padding: 8px 8px;
+    text-decoration: none;
+    cursor:pointer;
+}
+
+.button-editar {
+    
     margin-left: 25%;
     -webkit-border-radius: 4px;
     -moz-border-radius: 4px;
@@ -121,6 +172,7 @@ body {
     padding: 8px 8px;
     text-decoration: none;
     cursor:pointer;
+    width: 130px;
 }
 
 
@@ -274,8 +326,8 @@ body {
 
 .selectpicker{
   text-align: center;
-  margin-left: 17.5%;
-  width: 65%;
+  margin-left: 12.5%;
+  width: 75%;
   height: 110px;
 }
 

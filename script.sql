@@ -144,7 +144,10 @@ INSERT INTO historial VALUES (1,10221,"2017-09-10",1,1, "eduardo", 0,0,"Lucia Ru
 -- PEDIDOS
 
 
-INSERT INTO pedido VALUES(1,10221,"Maria Luisa Perez","jose","arete","Soldar pajuela", );
+INSERT INTO pedido VALUES(1,10221,"Maria Luisa Perez","jose",4,17,"asdasdasdasdasdasdasd",16,"alta", 2017-08-12 );
+INSERT INTO pedido VALUES(2,10222,"Maria Luisa Perez","sergio",4,17,"asdasdasdasdasdasdasd",16,"alta", 2017-08-12 );
+INSERT INTO pedido VALUES(3,10223,"Maria Luisa Perez","juan",4,17,"asdasdasdasdasdasdasd",16,"alta", 2017-08-12 );
+
 
 
 
